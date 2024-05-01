@@ -3,33 +3,37 @@ import { Turn } from "../entity/turn/turn";
 import { TurnType } from "../entity/turn/turn-type";
 
 export class TurnController {
-  turn = new Turn(0, 1);
+	turn = new Turn();
+	playerId: number[] = [];
+	piece: CellType[] = [];
 
-  turnChange(): Turn {
-    this.printTurn();
-    this.turn = this.turn.changeTurn();
-    this.printTurn();
-    return this.turn;
-  }
+	constructor(playerAId: number, playerBId: number) {
+		this.playerId[0] = playerAId;
+		this.playerId[1] = playerBId;
+		this.piece[0] = CellType.Black;
+		this.piece[1] = CellType.White;
+	}
 
-  getCurrentTurn(): Turn {
-    return this.turn;
-  }
+	changeTurn() {
+		this.turn.printCurrentTurn();
+		this.turn = this.turn.changeTurn();
+		this.turn.printCurrentTurn();
+	}
 
-  getCurrentTurnType(): TurnType {
-    return this.turn.getCurrentTurn();
-  }
+	getCurrentTurn(): TurnType {
+		return this.turn.getCurrentTurn();
+	}
 
-  getPieceColor(turn: Turn): CellType {
-    return turn.pieceColor[turn.getCurrentTurn()];
-  }
+	getCurrentTurnCell(): CellType {
+		if (this.turn.getCurrentTurn() === TurnType.TurnA) return CellType.Black;
+		else return CellType.White;
+	}
 
-  getUserId(turn: Turn): number {
-    return turn.playersId[turn.getCurrentTurn()];
-  }
+	getCurrentPlayerId(): number {
+		return this.playerId[this.turn.getCurrentTurn()];
+	}
 
-  printTurn() {
-    if (this.getCurrentTurnType() === TurnType.TurnA) console.log("現在：黒");
-    if (this.getCurrentTurnType() === TurnType.TurnB) console.log("現在；白");
-  }
+	printCurrentTurn() {
+		this.turn.printCurrentTurn();
+	}
 }

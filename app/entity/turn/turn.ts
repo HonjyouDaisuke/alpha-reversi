@@ -1,32 +1,36 @@
-import Cell from "@/app/components/cell";
-import { CellType } from "../cell/cell-type";
+'use client'
 import { TurnType } from "./turn-type";
-import { Player, PlayerData } from "../player/player-type";
 
 export class Turn {
-  turn: TurnType = TurnType.TurnA;
-  pieceColor: CellType[] = [CellType.Black, CellType.White];
-  playersId: number[] = [];
+	turn: TurnType = TurnType.TurnA;
 
-  constructor(playerAId: number, playerBId: number) {
-    this.playersId[0] = playerAId;
-    this.playersId[1] = playerBId;
-  }
-  getTurn(): Turn {
-    return this;
-  }
+	constructor() {
+		this.turn = TurnType.TurnA;
+	}
 
-  changeTurn(): Turn {
-    if (this.turn === TurnType.TurnA) {
-      this.turn = TurnType.TurnB;
-    } else if (this.turn === TurnType.TurnB) {
-      this.turn = TurnType.TurnA;
-    }
-    console.log(`turn changed ${this.turn}`);
-    return this;
-  }
+	getTurn(): Turn {
+		return this;
+	}
 
-  getCurrentTurn(): TurnType {
-    return this.turn;
-  }
+	changeTurn(): Turn {
+		if (this.turn === TurnType.TurnA) {
+			this.turn = TurnType.TurnB;
+		} else if (this.turn === TurnType.TurnB) {
+			this.turn = TurnType.TurnA;
+		}
+		console.log(`turn changed ${this.turn}`);
+		return this;
+	}
+
+	getCurrentTurn(): TurnType {
+		return this.turn;
+	}
+
+	printCurrentTurn() {
+		let turnString = "現在のターンは:TurnAです。";
+
+		if (this.turn === TurnType.TurnB) turnString = "現在のターンは:TurnBです。"
+
+		console.log(turnString);
+	}
 }
