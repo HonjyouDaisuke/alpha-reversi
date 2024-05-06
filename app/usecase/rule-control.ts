@@ -33,6 +33,13 @@ export class RuleControl {
     return validMoves;
   }
 
+  isEmpty(cell: number): boolean {
+    if (cell === CellType.Empty) return true;
+    if (cell === CellType.Able) return true;
+    if (cell === CellType.Recommend) return true;
+    return false;
+  }
+
   checkDirection(
     map: number[][],
     p: Point,
@@ -46,7 +53,7 @@ export class RuleControl {
     if (map[y][x] !== 3 - player) return false;
 
     while (this.isValidPosition(map, { x: x, y: y })) {
-      if (map[y][x] === CellType.Empty) return false;
+      if (this.isEmpty(map[y][x])) return false;
       if (map[y][x] === player) return true;
       x += direction.x;
       y += direction.y;
@@ -87,7 +94,7 @@ export class RuleControl {
   }
 
   checkAbleToPlace(map: number[][], p: Point, player: CellType): boolean {
-    if (map[p.y][p.x] !== CellType.Empty) return false;
+    if (!this.isEmpty(map[p.y][p.x])) return false;
 
     for (let dir = 0; dir < DIR_LENGTH; dir++) {
       const d = this.makeDirectionPoint(dir);
@@ -109,7 +116,7 @@ export class RuleControl {
     let flippedPoints: Point[] = [];
 
     while (this.isValidPosition(map, pos)) {
-      if (map[pos.y][pos.x] === 0) return [];
+      if (this.isEmpty(map[pos.y][pos.x])) return [];
       if (map[pos.y][pos.x] === player) {
         return flippedPoints;
       }
@@ -121,7 +128,7 @@ export class RuleControl {
   }
 
   flipPiece(map: number[][], p: Point, player: CellType): number[][] {
-    if (map[p.y][p.x] !== CellType.Empty) return map;
+    if (!this.isEmpty(map[p.y][p.x])) return map;
     const tmpMap = [...map];
     tmpMap[p.y][p.x] = player;
     for (let dir = 0; dir < DIR_LENGTH; dir++) {
