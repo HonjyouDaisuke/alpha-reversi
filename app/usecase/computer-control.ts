@@ -1,7 +1,9 @@
 import { CellType } from "../entity/cell/cell-type";
 import { Point } from "../entity/cell/point-type";
 import { Evaluation } from "../entity/evaluation/evaluation";
+import { TurnType } from "../entity/turn/turn-type";
 import { RuleControl } from "./rule-control";
+import { TurnController } from "./turn-controller";
 
 type PosEvaluation = {
   evaluation: number;
@@ -12,12 +14,21 @@ export class ComputerControl {
   supportMap: number[][];
 
   constructor(map: number[][]) {
-    this.supportMap = map.concat();
+    this.supportMap = JSON.parse(JSON.stringify(map));
   }
 
   playerChange(player: CellType): CellType {
     return player === CellType.Black ? CellType.White : CellType.Black;
   }
+
+  getComputerPost(cell: CellType): Point | null {
+    const rule = new RuleControl();
+    const paths = rule.findValidPlace(this.supportMap, cell);
+
+    if (paths.length === null) return null;
+    return paths[0];
+  }
+
   miniMax(
     src: number[][],
     depth: number,
