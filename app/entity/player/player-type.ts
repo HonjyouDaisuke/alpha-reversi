@@ -3,6 +3,7 @@ import { Computer } from "../computer/computer";
 export type PlayerData = {
   id: number;
   name: string;
+  displayName: string;
   email: string;
   isCom: boolean;
   computer: Computer | null;
@@ -14,34 +15,47 @@ export class Player {
     this.players = [
       {
         id: 0,
-        name: "Human 1",
+        name: "human",
+        displayName: "人間さま",
         email: "Human@gmail.com",
         isCom: false,
         computer: null,
       },
       {
         id: 1,
-        name: "com1",
-        email: "Com1@gmail.com",
+        name: "com0",
+        displayName: "貧乏神(Level0)",
+        email: "Com0@gmail.com",
         isCom: true,
         computer: { depth: 0, level: 1 },
       },
       {
         id: 2,
+        name: "com1",
+        displayName: "赤鬼(Level1)",
+        email: "Com1@gmail.com",
+        isCom: true,
+        computer: { depth: 2, level: 1 },
+      },
+      {
+        id: 3,
         name: "com2",
+        displayName: "青鬼(Level2)",
         email: "Com2@gmail.com",
         isCom: true,
         computer: { depth: 4, level: 2 },
       },
       {
-        id: 3,
+        id: 4,
         name: "com3",
+        displayName: "閻魔大王(Level3)",
         email: "Com3@gmail.com",
         isCom: true,
         computer: { depth: 6, level: 3 },
       },
     ];
   }
+
   getPlayerData(id: number): PlayerData | null {
     for (let i = 0; i < this.players.length; i++) {
       if (this.players[i].id === id) {

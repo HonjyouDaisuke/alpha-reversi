@@ -10,6 +10,14 @@ export class Score {
     this.score.WhiteCount = 0;
   }
 
+  getBlackScore(): number {
+    return this.score.BlackCount;
+  }
+
+  getWhiteScore(): number {
+    return this.score.WhiteCount;
+  }
+
   getScore(map: number[][]): ScoreType {
     this.score.BlackCount = 0;
     this.score.WhiteCount = 0;

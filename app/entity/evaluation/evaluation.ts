@@ -16,7 +16,7 @@ export class Evaluation {
     ];
   }
 
-  getEvaluation(map: number[][]): number {
+  getEvaluation(map: number[][], targetCell: CellType): number {
     let res = 0;
     let black = 0;
     let white = 0;
@@ -26,11 +26,16 @@ export class Evaluation {
         const White = map[j][i] === CellType.White ? this.evaluation[j][i] : 0;
         black += Black;
         white += White;
-        res += Black - White;
+        //res += Black - White;
       }
     }
+
+    if (targetCell === CellType.Black) res = black - white;
+    else res = white - black;
     console.log(map);
-    console.log(`????black = ${black} white = ${white}`);
+    console.log(
+      `評価値計算中:black = ${black} white = ${white} target=${targetCell} 評価値:${res}`
+    );
     return res;
   }
 }

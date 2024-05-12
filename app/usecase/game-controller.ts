@@ -14,10 +14,11 @@ import { CellType } from "../entity/cell/cell-type";
 import Cell from "../components/cell";
 import { StatusType } from "../entity/status/status-type";
 import { ComputerControl } from "./computer-control";
+import { setting } from "../entity/setting/setting";
 
 export class GameController {
   players = new Player();
-  turnControl = new TurnController(0, 1);
+  turnControl = new TurnController();
   rule = new RuleControl();
   boardController = new BoardController();
   evaluation = new Evaluation();
@@ -25,6 +26,10 @@ export class GameController {
   status = StatusType.Prepare;
 
   constructor() {}
+
+  setPlayer(playerA: number, playerB: number) {
+    this.turnControl.setPlayer(playerA, playerB);
+  }
 
   getTurn(): TurnType {
     //const [turnControl] = useAtom(turnControlAtom);
@@ -35,6 +40,21 @@ export class GameController {
   getScore(): Score {
     return this.score;
   }
+
+  getCompleteMessage(): string {
+    const score = this.getScore();
+    const black = score.getBlackScore();
+    const white = score.getWhiteScore();
+    const playerAId = this.turnControl.getPlayerAId();
+    const playerAData = this.players.getPlayerData(playerAId);
+    const playerBId = this.turnControl.getPlayerBId();
+    const playerBData = this.players.getPlayerData(playerBId);
+
+    const winData = black > white ? playerAData : playerBData;
+
+    return `${winData?.displayName}の勝ち！！${playerAData?.displayName} - 黒:${black}個 vs 白:${white} - ${playerBData?.displayName}でした。`;
+  }
+
   isCompleted(): boolean {
     const paths1 = this.rule.findValidPlace(
       this.boardController.getCurrentBoard(),
@@ -63,17 +83,22 @@ export class GameController {
       this.turnControl.getCurrentTurnCell()
     );
 
+    const playerData = this.players.getPlayerData(
+      this.turnControl.getCurrentPlayerId()
+    );
+
     switch (this.status) {
       case StatusType.Prepare:
         this.boardController.clearAbleCell();
         this.status = StatusType.Waiting;
-        if (this.getTurn() !== TurnType.TurnA) break;
-
+        if (playerData?.isCom) break;
+        if (!setting.useHint) break;
         const newBoard = this.boardController.setAbleCell(paths);
         if (newBoard === null || newBoard?.board === undefined) break;
 
         this.boardController.setNewBoard(newBoard.board);
         console.log(`置くことが可能なパスは${paths.length}個あります。`);
+
         break;
 
       case StatusType.Waiting:
@@ -84,10 +109,13 @@ export class GameController {
           this.status = StatusType.Prepare;
           break;
         }
-
-        if (this.getTurn() === TurnType.TurnB) {
+        // Comの処理
+        if (playerData?.isCom) {
+          let depth = 0;
+          if (playerData.computer !== null) depth = playerData.computer.depth;
           const computer = new ComputerControl(
-            this.boardController.getCurrentBoard()
+            this.boardController.getCurrentBoard(),
+            depth
           );
           console.log("コンピュータのターンです。");
           console.log("盤面は以下です");
@@ -127,7 +155,10 @@ export class GameController {
     this.score.getScore(newBoard.board);
     this.score.printScore();
     console.log(`ボードに置きました${this.turnControl.getCurrentTurn()}`);
-    const evaluationScore = this.evaluation.getEvaluation(newBoard.board);
+    const evaluationScore = this.evaluation.getEvaluation(
+      newBoard.board,
+      this.turnControl.getCurrentTurnCell()
+    );
     console.log(`スコア：${evaluationScore}`);
     //turnController.turnChange();
     console.log(`プレーヤーを入れ替えます${this.getTurn()}`);
@@ -139,7 +170,11 @@ export class GameController {
 
   putHumanPiece(p: Point) {
     console.log(`セルがクリックされました player=${this.getTurn()}`);
-    if (this.getTurn() !== TurnType.TurnA) {
+    const playerData = this.players.getPlayerData(
+      this.turnControl.getCurrentPlayerId()
+    );
+
+    if (playerData?.isCom) {
       console.log("あなたのターンではありません。");
       return;
     }

@@ -1,12 +1,13 @@
-import { RuleControl } from "@/app/usecase/rule-control";
-import { CellType } from "../cell/cell-type";
+import { RuleControl } from "@/usecase/rule-control";
+import { CellType } from "@/entity/cell/cell-type";
 import { BoardClass } from "./board";
-import { Point } from "../cell/point-type";
+import { Point } from "@/entity/cell/point-type";
 
 export class BoardController {
   board = new BoardClass();
 
   isEmpty(p: Point): boolean {
+    if (p === undefined) return false;
     const cell = this.board.board[p.y][p.x];
     if (cell === CellType.Empty) return true;
     if (cell === CellType.Able) return true;
