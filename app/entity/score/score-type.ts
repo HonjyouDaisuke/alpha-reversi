@@ -1,4 +1,4 @@
 export type ScoreType = {
-  BlackCount: number;
-  WhiteCount: number;
+	blackCount: number;
+	whiteCount: number;
 };
