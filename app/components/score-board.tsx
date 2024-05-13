@@ -1,17 +1,18 @@
 import { ScoreType } from "../entity/score/score-type";
+import ScoreChart from "./score-chart";
 
 interface Props {
-	score: ScoreType;
+  score: ScoreType;
+  playerAName: string | undefined;
+  playerBName: string | undefined;
 }
 
-export function ScoreBoard({ score }: Props) {
-	return (
-		<div className="flex flex-row bg-blue-900">
-			<div>黒:</div>
-			<div>{score.blackCount}枚</div>
-			<div>vs</div>
-			<div>白:</div>
-			<div>{score.whiteCount}枚</div>
-		</div>
-	);
+export function ScoreBoard({ score, playerAName, playerBName }: Props) {
+  return (
+    <div className="flex flex-row bg-blue-900">
+      <div>黒</div>
+      <ScoreChart score={score} />
+      <div>白</div>
+    </div>
+  );
 }

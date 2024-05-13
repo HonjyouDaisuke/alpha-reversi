@@ -31,6 +31,16 @@ export class GameController {
     this.turnControl.setPlayer(playerA, playerB);
   }
 
+  getPlayerAName(): string | undefined {
+    const id = this.turnControl.getPlayerAId();
+    return this.players.getPlayerData(id)?.displayName;
+  }
+
+  getPlayerBName(): string | undefined {
+    const id = this.turnControl.getPlayerBId();
+    return this.players.getPlayerData(id)?.displayName;
+  }
+
   getTurn(): TurnType {
     //const [turnControl] = useAtom(turnControlAtom);
     return this.turnControl.getCurrentTurn();
