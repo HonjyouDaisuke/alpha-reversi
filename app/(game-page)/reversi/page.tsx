@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { Player } from "@/entity/player/player-type";
 import { RightSideBar } from "@/components/right-side-bar";
 import { LeftSideBar } from "@/components/left-side-bar";
+import ScoreChart from "@/components/score-chart";
 
 const gameControlAtom = atom(new GameController());
 
@@ -63,7 +64,7 @@ export default function ReversiPage() {
 					gameBoard={gameControl.boardController.getCurrentBoard()}
 					onClick={handleCellClick}
 				/>
-				<ScoreBoard score={gameControl.getScore().score} />
+				<ScoreChart score={gameControl.getScore().score} />
 			</div>
 			<div className="w-1/4 h-full">
 				<LeftSideBar />
