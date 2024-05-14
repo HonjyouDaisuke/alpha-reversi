@@ -1,18 +1,17 @@
 "use client";
 import Board from "@/components/board";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { Score } from "@/entity/score/score";
 import { ScoreBoard } from "@/components/score-board";
 import ConfirmModal from "@/components/confirm-modal";
 import { GameController } from "@/usecase/game-controller";
-import { PrimitiveAtom, atom } from "jotai";
+import { atom } from "jotai";
 import { useAtom } from "jotai/react";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { Player } from "@/entity/player/player-type";
+//import { useRouter } from "next/router";
 import { RightSideBar } from "@/components/right-side-bar";
 import { LeftSideBar } from "@/components/left-side-bar";
 import ScoreChart from "@/components/score-chart";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const gameControlAtom = atom(new GameController());
 
@@ -27,6 +26,7 @@ export default function ReversiPage() {
 	const playerA = Number(searchParams.get("playerA"));
 	const playerB = Number(searchParams.get("playerB"));
 	const [completeMessage, setMessage] = useState("");
+
 	const intervalId = setInterval(() => {
 		if (gameControl.gameInterval()) {
 			clearInterval(intervalId);

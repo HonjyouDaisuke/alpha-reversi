@@ -13,8 +13,6 @@ export class TurnController {
   setPlayer(playerA: number, playerB: number) {
     this.playerId[0] = playerA;
     this.playerId[1] = playerB;
-    // this.playerId[0] = playerAId;
-    // this.playerId[1] = playerBId;
     this.piece[0] = CellType.Black;
     this.piece[1] = CellType.White;
   }

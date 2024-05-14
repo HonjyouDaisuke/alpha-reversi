@@ -3,9 +3,10 @@ import Button from "@/components/button";
 import { Player } from "@/entity/player/player-type";
 import titleImage from "@/img/osero-illust17.png";
 import titleStrImage from "@/img/title.png";
-import { useRouter } from "next/navigation";
+//import { useRouter } from "next/router";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function TitleBoard() {
 	const players = new Player();
@@ -32,10 +33,21 @@ export default function TitleBoard() {
 	return (
 		<div className="h-screen w-screen flex bg-gray-600 items-center justify-center">
 			<div className="bg-white rounded p-4 text-black shadow">
-				<div className="flex flex-row">
-					<Image src={titleImage} width="150" height="150" alt={"Alpha Reversi"} />
-					<Image src={titleStrImage} height="100" alt={"Alpha Reversi"} />
-
+				<div className="flex flex-row items-end">
+					<Image
+						src={titleImage}
+						height="150"
+						width="150"
+						alt={"Alpha Reversi"}
+						priority={true}
+					/>
+					<Image
+						className="justify-items-end"
+						src={titleStrImage}
+						height="100"
+						alt={"Alpha Reversi"}
+						priority={true}
+					/>
 				</div>
 				<div className="grid grid-cols-2">
 					<div className="flex flex-col">
@@ -48,7 +60,11 @@ export default function TitleBoard() {
 							onChange={handleChangePlayerA}
 						>
 							{players.players.map((item) => (
-								<option key={item.id} value={item.id} className="hover:bg-blue-300">
+								<option
+									key={item.id}
+									value={item.id}
+									className="hover:bg-blue-300"
+								>
 									{item.displayName}
 								</option>
 							))}
@@ -64,15 +80,19 @@ export default function TitleBoard() {
 							onChange={handleChangePlayerB}
 						>
 							{players.players.map((item) => (
-								<option key={item.id} value={item.id} className="hover:bg-pink-300">
+								<option
+									key={item.id}
+									value={item.id}
+									className="hover:bg-pink-300"
+								>
 									{item.displayName}
 								</option>
 							))}
 						</select>
 					</div>
 				</div>
-				<div className="flex w-full justify-center m-3">
-					<Button onClick={handleButton} mode={0}>★ゲームスタート★</Button>
+				<div className="w-full justify-center">
+					<button onClick={handleButton}>★ゲームスタート★</button>
 				</div>
 			</div>
 		</div>
