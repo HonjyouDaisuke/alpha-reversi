@@ -91,8 +91,8 @@ export default function TitleBoard() {
 						</select>
 					</div>
 				</div>
-				<div className="w-full justify-center">
-					<button onClick={handleButton}>★ゲームスタート★</button>
+				<div className="flex w-full justify-center p-3">
+					<Button onClick={handleButton} mode={0}>★ゲームスタート★</Button>
 				</div>
 			</div>
 		</div>
