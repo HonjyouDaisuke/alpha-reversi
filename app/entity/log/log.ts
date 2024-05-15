@@ -4,27 +4,34 @@ import { Score } from "../score/score";
 import { LogType } from "./log-type";
 
 export class Log {
-	logDataList: LogType[] = [];
-	constructor() { }
-	pushLogData(playerCell: CellType | null, message: string) {
-		const logData = { playerCell: playerCell, message: message };
+  logDataList: LogType[] = [];
+  constructor() {}
+  pushLogData(playerCell: CellType | null, message: string) {
+    const logData = { playerCell: playerCell, message: message };
 
-		this.logDataList.push(logData);
-	}
+    this.logDataList.push(logData);
+  }
 
-	fetchLogData(): LogType[] {
-		return this.logDataList;
-	}
+  fetchLogData(): LogType[] {
+    return this.logDataList;
+  }
 
-	makeMessageFromPut(p: Point, score: Score): string {
-		return `[${p.x}, ${p.y}]に置きました。→スコアは${score.getScoreText()}になりました。`;
-	}
+  UnitConversion(p: Point): string {
+    const xItems = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    const yItems = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    return `[${xItems[p.x]},${yItems[p.y]}]`;
+  }
+  makeMessageFromPut(p: Point, score: Score): string {
+    return `${this.UnitConversion(
+      p
+    )}に置きました。→スコアは${score.getScoreText()}になりました。`;
+  }
 
-	makeMessageInvalidTurn(): string {
-		return `置ける場所がありませんでした。ターンを入れ替えます`;
-	}
+  makeMessageInvalidTurn(): string {
+    return `置ける場所がありませんでした。ターンを入れ替えます`;
+  }
 
-	makeMessageEnded(score: Score): string {
-		return `終了しました。最終スコアは${score.getScoreText()}です。`;
-	}
+  makeMessageEnded(score: Score): string {
+    return `終了しました。最終スコアは${score.getScoreText()}です。`;
+  }
 }

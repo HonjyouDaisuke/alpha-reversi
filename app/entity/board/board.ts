@@ -5,16 +5,18 @@ export class BoardClass {
   board: number[][] = [];
 
   constructor() {
-    for (let i = 0; i < BoardType.height; i++) {
-      this.board[i] = new Array(BoardType.width).fill(CellType.Empty);
-    }
+    this.setEmpty();
     this.setStartPos();
   }
 
-  setStartPos() {
+  setEmpty() {
     for (let i = 0; i < BoardType.height; i++) {
       this.board[i] = new Array(BoardType.width).fill(CellType.Empty);
     }
+  }
+
+  setStartPos() {
+    this.setEmpty();
     this.board[3][3] = CellType.Black;
     this.board[3][4] = CellType.White;
     this.board[4][3] = CellType.White;

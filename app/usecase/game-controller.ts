@@ -17,195 +17,216 @@ import { ComputerControl } from "./computer-control";
 import { setting } from "../entity/setting/setting";
 import { Log } from "@/entity/log/log";
 import { LogType } from "@/entity/log/log-type";
+import { MessageType } from "@/entity/message/message-type";
+import { Message } from "@/entity/message/message";
 
 export class GameController {
-	players = new Player();
-	turnControl = new TurnController();
-	rule = new RuleControl();
-	useHint = false;
-	boardController = new BoardController();
-	evaluation = new Evaluation();
-	score = new Score();
-	status = StatusType.Prepare;
-	log = new Log();
+  players = new Player();
+  turnControl = new TurnController();
+  rule = new RuleControl();
+  useHint = false;
+  boardController = new BoardController();
+  evaluation = new Evaluation();
+  score = new Score();
+  status = StatusType.Prepare;
+  log = new Log();
+  message = new Message();
 
-	constructor() { }
+  constructor() {}
 
-	setPlayer(playerA: number, playerB: number) {
-		this.turnControl.setPlayer(playerA, playerB);
-	}
+  setPlayer(playerA: number, playerB: number) {
+    this.turnControl.setPlayer(playerA, playerB);
+  }
 
-	setUseHint(useHint: boolean | null) {
-		if (useHint === null) useHint = false;
-		this.useHint = useHint;
-	}
+  setUseHint(useHint: boolean | null) {
+    if (useHint === null) useHint = false;
+    this.useHint = useHint;
+  }
 
-	fetchLogData(): LogType[] {
-		return this.log.fetchLogData();
-	}
+  fetchLogData(): LogType[] {
+    return this.log.fetchLogData();
+  }
 
-	getUseHint(): boolean {
-		return this.useHint;
-	}
-	getPlayerAName(): string | undefined {
-		const id = this.turnControl.getPlayerAId();
-		return this.players.getPlayerData(id)?.displayName;
-	}
+  getMessageData(): MessageType {
+    return this.message.getMessage();
+  }
 
-	getPlayerBName(): string | undefined {
-		const id = this.turnControl.getPlayerBId();
-		return this.players.getPlayerData(id)?.displayName;
-	}
+  getUseHint(): boolean {
+    return this.useHint;
+  }
 
-	getTurn(): TurnType {
-		return this.turnControl.getCurrentTurn();
-	}
+  getPlayerAName(): string | undefined {
+    const id = this.turnControl.getPlayerAId();
+    return this.players.getPlayerData(id)?.displayName;
+  }
 
-	getScore(): Score {
-		return this.score;
-	}
+  getPlayerBName(): string | undefined {
+    const id = this.turnControl.getPlayerBId();
+    return this.players.getPlayerData(id)?.displayName;
+  }
 
-	getCompleteMessage(): string {
-		const score = this.getScore();
-		const black = score.getBlackScore();
-		const white = score.getWhiteScore();
-		const playerAId = this.turnControl.getPlayerAId();
-		const playerAData = this.players.getPlayerData(playerAId);
-		const playerBId = this.turnControl.getPlayerBId();
-		const playerBData = this.players.getPlayerData(playerBId);
+  getTurn(): TurnType {
+    return this.turnControl.getCurrentTurn();
+  }
 
-		const winData = black > white ? playerAData : playerBData;
+  getScore(): Score {
+    return this.score;
+  }
 
-		return `${winData?.displayName}の勝ち！！${playerAData?.displayName} - 黒:${black}個 vs 白:${white} - ${playerBData?.displayName}でした。`;
-	}
+  getCompleteMessage(): string {
+    const score = this.getScore();
+    const black = score.getBlackScore();
+    const white = score.getWhiteScore();
+    const playerAId = this.turnControl.getPlayerAId();
+    const playerAData = this.players.getPlayerData(playerAId);
+    const playerBId = this.turnControl.getPlayerBId();
+    const playerBData = this.players.getPlayerData(playerBId);
 
-	isCompleted(): boolean {
-		const paths1 = this.rule.findValidPlace(
-			this.boardController.getCurrentBoard(),
-			CellType.Black
-		);
-		if (paths1.length > 0) return false;
+    const winData = black > white ? playerAData : playerBData;
 
-		const paths2 = this.rule.findValidPlace(
-			this.boardController.getCurrentBoard(),
-			CellType.White
-		);
-		if (paths2.length > 0) return false;
+    return `${winData?.displayName}の勝ち！！${playerAData?.displayName} - 黒:${black}個 vs 白:${white} - ${playerBData?.displayName}でした。`;
+  }
 
-		return true;
-	}
+  isCompleted(): boolean {
+    const paths1 = this.rule.findValidPlace(
+      this.boardController.getCurrentBoard(),
+      CellType.Black
+    );
+    if (paths1.length > 0) return false;
 
-	gameInterval(): boolean {
-		if (this.status === StatusType.Completed) return true;
-		if (this.isCompleted()) {
-			this.status = StatusType.Completed;
-			const message = this.log.makeMessageEnded(this.score);
-			this.log.pushLogData(null, message);
-		}
-		//console.log(`status = ${this.status} Turn = ${this.getTurn()}`);
-		const paths = this.rule.findValidPlace(
-			this.boardController.getCurrentBoard(),
-			this.turnControl.getCurrentTurnCell()
-		);
+    const paths2 = this.rule.findValidPlace(
+      this.boardController.getCurrentBoard(),
+      CellType.White
+    );
+    if (paths2.length > 0) return false;
 
-		const playerData = this.players.getPlayerData(
-			this.turnControl.getCurrentPlayerId()
-		);
+    return true;
+  }
 
-		switch (this.status) {
-			case StatusType.Prepare:
-				this.boardController.clearAbleCell();
-				this.status = StatusType.Waiting;
-				if (playerData?.isCom) break;
-				if (!this.useHint) break;
-				const newBoard = this.boardController.setAbleCell(paths);
-				if (newBoard === null || newBoard?.board === undefined) break;
+  gameInterval(): boolean {
+    if (this.status === StatusType.Completed) return true;
+    if (this.isCompleted()) {
+      this.status = StatusType.Completed;
+      const message = this.log.makeMessageEnded(this.score);
+      this.log.pushLogData(null, message);
+    }
+    //console.log(`status = ${this.status} Turn = ${this.getTurn()}`);
+    const paths = this.rule.findValidPlace(
+      this.boardController.getCurrentBoard(),
+      this.turnControl.getCurrentTurnCell()
+    );
 
-				this.boardController.setNewBoard(newBoard.board);
+    const playerData = this.players.getPlayerData(
+      this.turnControl.getCurrentPlayerId()
+    );
 
-				break;
+    switch (this.status) {
+      case StatusType.Prepare:
+        this.boardController.clearAbleCell();
+        this.status = StatusType.Waiting;
+        if (playerData?.isCom) break;
+        if (!this.useHint) break;
+        console.log(`turntype--->${this.turnControl.getCurrentTurn()}`);
+        this.message.setMessage("ヒント準備中。。。", true);
+        const newBoard = this.boardController.setAbleCell(
+          paths,
+          this.turnControl.getCurrentTurnCell()
+        );
+        console.log(`ヒントを作成しました。`);
+        if (newBoard === null || newBoard?.board === undefined) break;
 
-			case StatusType.Waiting:
-				if (paths.length <= 0) {
-					const message = this.log.makeMessageInvalidTurn();
-					const playerCell = this.turnControl.getCurrentTurnCell();
-					this.log.pushLogData(playerCell, message);
-					this.turnControl.changeTurn();
-					this.boardController.clearAbleCell();
-					this.status = StatusType.Prepare;
-					break;
-				}
-				// Comの処理
-				if (playerData?.isCom) {
-					let depth = 0;
-					if (playerData.computer !== null) depth = playerData.computer.depth;
-					const computer = new ComputerControl(
-						this.boardController.getCurrentBoard(),
-						depth
-					);
-					const post = computer.getComputerPost(
-						this.turnControl.getCurrentTurnCell()
-					);
-					if (post === null) break;
-					this.putPiece(post);
-				}
-				break;
+        this.boardController.setNewBoard(newBoard.board);
+        console.log(this.boardController.getCurrentBoard());
+        break;
 
-			default:
-				break;
-		}
-		return false;
-	}
+      case StatusType.Waiting:
+        if (paths.length <= 0) {
+          const message = this.log.makeMessageInvalidTurn();
+          const playerCell = this.turnControl.getCurrentTurnCell();
+          this.log.pushLogData(playerCell, message);
+          this.turnControl.changeTurn();
+          this.boardController.clearAbleCell();
+          this.status = StatusType.Prepare;
+          break;
+        }
 
-	printTurn() {
-		this.turnControl.printCurrentTurn();
-	}
+        if (!playerData?.isCom)
+          this.message.setMessage("あなたの番です", false);
+        // Comの処理
+        if (playerData?.isCom) {
+          this.message.setMessage(
+            `${playerData.displayName}の番です。(思考中・・・)`,
+            true
+          );
+          let depth = 0;
+          if (playerData.computer !== null) depth = playerData.computer.depth;
+          const computer = new ComputerControl(
+            this.boardController.getCurrentBoard(),
+            depth
+          );
+          const post = computer.getComputerPost(
+            this.turnControl.getCurrentTurnCell()
+          );
+          if (post === null) break;
+          this.putPiece(post);
+        }
+        break;
 
-	putPiece(p: Point): boolean {
-		const newBoard = this.boardController.setNewPiece(
-			p,
-			this.turnControl.getCurrentTurnCell()
-		);
-		if (newBoard === null) {
-			console.log("置けませんでした");
-			return false;
-		}
-		console.log(`ボードに置きます${this.turnControl.getCurrentTurn()}`);
-		//setBoard(newBoard);
-		this.boardController.setNewBoard(newBoard.board);
-		this.score.getScore(newBoard.board);
-		this.score.printScore();
-		console.log(`ボードに置きました${this.turnControl.getCurrentTurn()}`);
-		const evaluationScore = this.evaluation.getEvaluation(
-			newBoard.board,
-			this.turnControl.getCurrentTurnCell()
-		);
-		const message = this.log.makeMessageFromPut(p, this.score);
-		const playerCell = this.turnControl.getCurrentTurnCell();
-		this.log.pushLogData(playerCell, message);
+      default:
+        break;
+    }
+    return false;
+  }
 
-		console.log(`プレーヤーを入れ替えます${this.getTurn()}`);
-		this.turnControl.changeTurn();
-		console.log(`プレーヤー入れ替えました。`);
-		this.turnControl.printCurrentTurn();
-		this.status = StatusType.Prepare;
+  printTurn() {
+    this.turnControl.printCurrentTurn();
+  }
 
-		return true;
-	}
+  putPiece(p: Point): boolean {
+    const newBoard = this.boardController.setNewPiece(
+      p,
+      this.turnControl.getCurrentTurnCell()
+    );
+    if (newBoard === null) {
+      this.message.setMessage("そこには置けませんでした。", false);
+      return false;
+    }
+    console.log(`ボードに置きます${this.turnControl.getCurrentTurn()}`);
+    //setBoard(newBoard);
+    this.boardController.setNewBoard(newBoard.board);
+    this.score.getScore(newBoard.board);
+    this.score.printScore();
+    console.log(`ボードに置きました${this.turnControl.getCurrentTurn()}`);
+    const evaluationScore = this.evaluation.getEvaluation(
+      newBoard.board,
+      this.turnControl.getCurrentTurnCell()
+    );
+    const message = this.log.makeMessageFromPut(p, this.score);
+    const playerCell = this.turnControl.getCurrentTurnCell();
+    this.log.pushLogData(playerCell, message);
 
-	putHumanPiece(p: Point) {
-		console.log(`セルがクリックされました player=${this.getTurn()}`);
-		const playerData = this.players.getPlayerData(
-			this.turnControl.getCurrentPlayerId()
-		);
+    console.log(`プレーヤーを入れ替えます${this.getTurn()}`);
+    this.turnControl.changeTurn();
+    console.log(`プレーヤー入れ替えました。`);
+    this.turnControl.printCurrentTurn();
+    this.status = StatusType.Prepare;
 
-		if (playerData?.isCom) {
-			console.log("あなたのターンではありません。");
-			return;
-		}
+    return true;
+  }
 
-		//console.log(p);
-		if (!this.putPiece(p)) return;
-		this.boardController.clearAbleCell();
-	}
+  putHumanPiece(p: Point) {
+    console.log(`セルがクリックされました player=${this.getTurn()}`);
+    const playerData = this.players.getPlayerData(
+      this.turnControl.getCurrentPlayerId()
+    );
+
+    if (playerData?.isCom) {
+      console.log("あなたのターンではありません。");
+      return;
+    }
+
+    //console.log(p);
+    if (!this.putPiece(p)) return;
+    this.boardController.clearAbleCell();
+  }
 }
