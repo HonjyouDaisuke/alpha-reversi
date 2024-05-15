@@ -6,8 +6,9 @@ interface Props {
 	onClick: (x: number, y: number) => void;
 }
 export default function Board({ gameBoard, onClick }: Props) {
-	//console.log("ボード表示します");
-	//console.log(gameBoard);
+	// TODO:座標をつけたい・・・
+	const xItems = ["", "A", "B", "C", "D", "E", "F", "G", "H"];
+	const yItems = ["1", "2", "3", "4", "5", "6", "7", "8"];
 	return (
 		<div>
 			{gameBoard.map((row: number[], y: number) => (

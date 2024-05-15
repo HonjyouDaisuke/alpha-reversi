@@ -15,15 +15,19 @@ import Cell from "../components/cell";
 import { StatusType } from "../entity/status/status-type";
 import { ComputerControl } from "./computer-control";
 import { setting } from "../entity/setting/setting";
+import { Log } from "@/entity/log/log";
+import { LogType } from "@/entity/log/log-type";
 
 export class GameController {
 	players = new Player();
 	turnControl = new TurnController();
 	rule = new RuleControl();
+	useHint = false;
 	boardController = new BoardController();
 	evaluation = new Evaluation();
 	score = new Score();
 	status = StatusType.Prepare;
+	log = new Log();
 
 	constructor() { }
 
@@ -31,6 +35,18 @@ export class GameController {
 		this.turnControl.setPlayer(playerA, playerB);
 	}
 
+	setUseHint(useHint: boolean | null) {
+		if (useHint === null) useHint = false;
+		this.useHint = useHint;
+	}
+
+	fetchLogData(): LogType[] {
+		return this.log.fetchLogData();
+	}
+
+	getUseHint(): boolean {
+		return this.useHint;
+	}
 	getPlayerAName(): string | undefined {
 		const id = this.turnControl.getPlayerAId();
 		return this.players.getPlayerData(id)?.displayName;
@@ -83,7 +99,8 @@ export class GameController {
 		if (this.status === StatusType.Completed) return true;
 		if (this.isCompleted()) {
 			this.status = StatusType.Completed;
-			console.log("終了でーす♪");
+			const message = this.log.makeMessageEnded(this.score);
+			this.log.pushLogData(null, message);
 		}
 		//console.log(`status = ${this.status} Turn = ${this.getTurn()}`);
 		const paths = this.rule.findValidPlace(
@@ -100,20 +117,21 @@ export class GameController {
 				this.boardController.clearAbleCell();
 				this.status = StatusType.Waiting;
 				if (playerData?.isCom) break;
-				if (!setting.useHint) break;
+				if (!this.useHint) break;
 				const newBoard = this.boardController.setAbleCell(paths);
 				if (newBoard === null || newBoard?.board === undefined) break;
 
 				this.boardController.setNewBoard(newBoard.board);
-				console.log(`置くことが可能なパスは${paths.length}個あります。`);
 
 				break;
 
 			case StatusType.Waiting:
 				if (paths.length <= 0) {
-					console.log("パスが見つかりませんでした。ターンを変えます。");
+					const message = this.log.makeMessageInvalidTurn();
+					const playerCell = this.turnControl.getCurrentTurnCell();
+					this.log.pushLogData(playerCell, message);
 					this.turnControl.changeTurn();
-					// TODO:RecomendCellを消す必要があると思う
+					this.boardController.clearAbleCell();
 					this.status = StatusType.Prepare;
 					break;
 				}
@@ -125,19 +143,14 @@ export class GameController {
 						this.boardController.getCurrentBoard(),
 						depth
 					);
-					console.log("コンピュータのターンです。");
-					console.log("盤面は以下です");
-					console.log(this.boardController.getCurrentBoard());
-					console.log("置ける場所は以下です。");
-					console.log(paths);
 					const post = computer.getComputerPost(
 						this.turnControl.getCurrentTurnCell()
 					);
 					if (post === null) break;
 					this.putPiece(post);
 				}
-
 				break;
+
 			default:
 				break;
 		}
@@ -148,14 +161,14 @@ export class GameController {
 		this.turnControl.printCurrentTurn();
 	}
 
-	putPiece(p: Point) {
+	putPiece(p: Point): boolean {
 		const newBoard = this.boardController.setNewPiece(
 			p,
 			this.turnControl.getCurrentTurnCell()
 		);
 		if (newBoard === null) {
 			console.log("置けませんでした");
-			return;
+			return false;
 		}
 		console.log(`ボードに置きます${this.turnControl.getCurrentTurn()}`);
 		//setBoard(newBoard);
@@ -167,13 +180,17 @@ export class GameController {
 			newBoard.board,
 			this.turnControl.getCurrentTurnCell()
 		);
-		console.log(`スコア：${evaluationScore}`);
-		//turnController.turnChange();
+		const message = this.log.makeMessageFromPut(p, this.score);
+		const playerCell = this.turnControl.getCurrentTurnCell();
+		this.log.pushLogData(playerCell, message);
+
 		console.log(`プレーヤーを入れ替えます${this.getTurn()}`);
 		this.turnControl.changeTurn();
 		console.log(`プレーヤー入れ替えました。`);
 		this.turnControl.printCurrentTurn();
 		this.status = StatusType.Prepare;
+
+		return true;
 	}
 
 	putHumanPiece(p: Point) {
@@ -187,9 +204,8 @@ export class GameController {
 			return;
 		}
 
-		console.log(p);
-		this.putPiece(p);
+		//console.log(p);
+		if (!this.putPiece(p)) return;
 		this.boardController.clearAbleCell();
-
 	}
 }

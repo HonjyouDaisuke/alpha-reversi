@@ -21,8 +21,8 @@ export default function Button(props: ButtonInfo = defaultProps) {
 				onClick={props.onClick}
 				type={props.type}
 				className={`${props.mode === 0
-					? 'bg-green-500 hover:bg-green-700 text-white'
-					: 'hover:bg-green-700 border-green-500 border text-secondary-500 '
+					? 'bg-green-500 hover:bg-green-700 text-white shadow'
+					: 'hover:bg-green-700 border-green-500 border text-secondary-500 shadow'
 					} font-bold py-2 px-4 rounded`}>
 				{props.children}
 			</button>

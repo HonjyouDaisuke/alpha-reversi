@@ -1,17 +1,60 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 名称
+
+### オセロゲーム(Alpha Reversi)
+ オセロゲームをしながら、オセロに強くなろう！
+
+## 概要
+
+単純なオセロゲームです。スタート画面では、対戦を選ぶことができます。
+もちろん、コンピュータと対戦することができます。
+一番下にあるヒントにチェックをしてスタートすると、人間の手を打つ順番では、置くことができるマスと一番おすすめな
+うち手部分をピンクで光らせてくれます。なんとなくオセロの手を打つのではなく、このピンクがなぜ強調されているのかを
+考えながら打つと、あなたのオセロスキルがアップすると思いますよ。ぜひチャレンジしてください。
+
+## 技術仕様
+
+| 項目名  | 内容 |
+| ------------- | ------------- |
+| 動作環境  | Web上(デプロイ先はVercel)  |
+| 使用言語  | Typescript  |
+| フレームワーク  | Nextjs v14.0.4 |
+| css  | Tailwind CSS v3.4.1 |
+| test環境  | Jest v29.7.0 |
+| 状態管理  | jotai v2.8.0 |
+
+### その他技術情報
+
+その他の技術情報は以下を参照ください。
+
+[技術情報へのリンク](/documents/design-doc.md)
+
+## 利用方法
+
+このプロジェクトはVercelにデプロイしていますので、以下をクリックして実行してみてください。
+
 
 ## Getting Started
 
-First, run the development server:
+手元のマシンで動作させるには以下を実行してください
 
 ```bash
 npm run dev
 # or
 yarn dev
 # or
-pnpm dev
+pnpm run dev
+```
+その後、以下をクリックしてブラウザを立ち上げてください。
+[http://localhost:3000](http://localhost:3000)
+
+テストを実行する場合は以下を実行してください。
+
+```bash
+npm run test
 # or
-bun dev
+yarn test
+# or
+pnpm run test
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
