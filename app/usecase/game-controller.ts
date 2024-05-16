@@ -95,7 +95,9 @@ export class GameController {
   gameInterval(): boolean {
     if (this.status === StatusType.Completed) return true;
     if (this.isCompleted()) {
-      this.completeGame();
+      this.status = StatusType.Completed;
+      const message = this.log.makeMessageEnded(this.score);
+      this.log.pushLogData(null, message);
       return true;
     }
 
@@ -110,12 +112,6 @@ export class GameController {
 
     this.handleGameStatus(paths, playerData);
     return false;
-  }
-
-  private completeGame(): void {
-    this.status = StatusType.Completed;
-    const message = this.log.makeMessageEnded(this.score);
-    this.log.pushLogData(null, message);
   }
 
   private handleGameStatus(
