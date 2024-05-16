@@ -125,14 +125,14 @@ export class GameController {
     if (this.status === StatusType.Prepare) {
       this.boardController.clearAbleCell();
       this.status = StatusType.Waiting;
-      if (!playerData?.isCom && this.useHint) {
-        this.message.setMessage("ヒント準備中。。。", true);
-        const newBoard = this.boardController.setAbleCell(
-          paths,
-          this.turnControl.getCurrentTurnCell()
-        );
-        if (newBoard) this.boardController.setNewBoard(newBoard.board);
-      }
+      if (playerData?.isCom || !this.useHint) return;
+      // ヒントを作成
+      this.message.setMessage("ヒント準備中。。。", true);
+      const newBoard = this.boardController.setAbleCell(
+        paths,
+        this.turnControl.getCurrentTurnCell()
+      );
+      if (newBoard) this.boardController.setNewBoard(newBoard.board);
     } else if (this.status === StatusType.Waiting) {
       if (paths.length === 0) {
         this.handleInvalidTurn();
