@@ -1,8 +1,8 @@
 import React, { ReactNode, useState } from "react";
 
 interface Props {
-  children: ReactNode;
   value: boolean;
+  label: string;
   onChange: (e: React.FormEvent) => void;
 }
 
@@ -36,7 +36,7 @@ function Check({ value, onChange }: CheckProps) {
     );
   }
 }
-export default function CheckBox({ children, value, onChange }: Props) {
+export default function CheckBox({ value, label, onChange }: Props) {
   const [isChecked, setIsChecked] = useState(value);
   return (
     <div>
@@ -46,7 +46,7 @@ export default function CheckBox({ children, value, onChange }: Props) {
           className="inline-block pl-[0.15rem] hover:cursor-pointer"
           htmlFor="checkbox"
         >
-          {children}
+          {label}
         </label>
       </div>
     </div>
