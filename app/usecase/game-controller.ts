@@ -49,19 +49,19 @@ export class GameController {
     return this.useHint;
   }
 
-  getPlayerName(playerIdMethod: () => number | undefined): string | undefined {
+  private playerName(
+    playerIdMethod: () => number | undefined
+  ): string | undefined {
     const id = playerIdMethod();
     return id !== undefined
       ? this.players.getPlayerData(id)?.displayName
       : undefined;
   }
 
-  getPlayerAName(): string | undefined {
-    return this.getPlayerName(() => this.turnControl.getPlayerAId());
-  }
-
-  getPlayerBName(): string | undefined {
-    return this.getPlayerName(() => this.turnControl.getPlayerBId());
+  getPlayerName(playerAorB: number): string | undefined {
+    if (playerAorB === 0)
+      return this.playerName(() => this.turnControl.getPlayerAId());
+    return this.playerName(() => this.turnControl.getPlayerBId());
   }
 
   getTurn(): TurnType {
@@ -123,24 +123,39 @@ export class GameController {
     playerData: PlayerData | null | undefined
   ): void {
     if (this.status === StatusType.Prepare) {
-      this.boardController.clearAbleCell();
-      this.status = StatusType.Waiting;
-      if (playerData?.isCom || !this.useHint) return;
-      // ヒントを作成
-      this.message.setMessage("ヒント準備中。。。", true);
-      const newBoard = this.boardController.setAbleCell(
-        paths,
-        this.turnControl.getCurrentTurnCell()
-      );
-      if (newBoard) this.boardController.setNewBoard(newBoard.board);
+      this.handlePrepareStatus(paths, playerData);
     } else if (this.status === StatusType.Waiting) {
-      if (paths.length === 0) {
-        this.handleInvalidTurn();
-      } else if (!playerData?.isCom) {
-        this.message.setMessage("あなたの番です", false);
-      } else {
-        this.handleComputerTurn(playerData);
-      }
+      this.handleWaitingStatus(paths, playerData);
+    }
+  }
+
+  private handlePrepareStatus(
+    paths: Point[],
+    playerData: PlayerData | null | undefined
+  ): void {
+    this.boardController.clearAbleCell();
+    this.status = StatusType.Waiting;
+
+    if (playerData?.isCom || !this.useHint) return;
+
+    this.message.setMessage("ヒント準備中。。。", true);
+    const newBoard = this.boardController.setAbleCell(
+      paths,
+      this.turnControl.getCurrentTurnCell()
+    );
+    if (newBoard) this.boardController.setNewBoard(newBoard.board);
+  }
+
+  private handleWaitingStatus(
+    paths: Point[],
+    playerData: PlayerData | null | undefined
+  ): void {
+    if (paths.length === 0) {
+      this.handleInvalidTurn();
+    } else if (!playerData?.isCom) {
+      this.message.setMessage("あなたの番です", false);
+    } else {
+      this.handleComputerTurn(playerData);
     }
   }
 
