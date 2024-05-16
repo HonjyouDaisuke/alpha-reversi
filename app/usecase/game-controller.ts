@@ -57,7 +57,7 @@ export class GameController {
 
 	getPlayerName(playerIdMethod: () => number | undefined): string | undefined {
 		const id = playerIdMethod();
-		return id ? this.players.getPlayerData(id)?.displayName : undefined;
+		return id !== undefined ? this.players.getPlayerData(id)?.displayName : undefined;
 	}
 
 	getPlayerAName(): string | undefined {
@@ -67,6 +67,7 @@ export class GameController {
 	getPlayerBName(): string | undefined {
 		return this.getPlayerName(() => this.turnControl.getPlayerBId());
 	}
+
 
 	getTurn(): TurnType {
 		return this.turnControl.getCurrentTurn();
@@ -185,7 +186,6 @@ export class GameController {
 			this.putPiece(post);
 		}
 	}
-
 
 	printTurn() {
 		this.turnControl.printCurrentTurn();
