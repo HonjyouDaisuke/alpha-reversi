@@ -46,6 +46,10 @@ Alpha+ Projectの第二期生向けの課題として出題されたアプリケ
 TODO:ここにmin-max法の解説を書く予定
 
 ### クラス図
+メインのクラス図
+![main-classDiagram](https://github.com/HonjyouDaisuke/alpha-reversi/assets/78740184/48b9210d-5ff2-4c7c-8357-36bb9eee86ae)
 
-TODO:ここにクラス図を置く予定
+コンポーネント
+![components](https://github.com/HonjyouDaisuke/alpha-reversi/assets/78740184/fe5df225-ede5-4c72-a812-ab27f632a4d6)
+
 
