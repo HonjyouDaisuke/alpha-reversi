@@ -33,10 +33,4 @@ export class Score {
 	getScoreText(): string {
 		return `黒：${this.score.blackCount}枚vs白：${this.score.whiteCount}枚`
 	}
-
-	printScore() {
-		console.log(
-			`現在 黒：${this.score.blackCount}枚vs白：${this.score.whiteCount}枚`
-		);
-	}
 }

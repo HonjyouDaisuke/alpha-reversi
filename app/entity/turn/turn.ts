@@ -18,19 +18,10 @@ export class Turn {
 		} else if (this.turn === TurnType.TurnB) {
 			this.turn = TurnType.TurnA;
 		}
-		console.log(`turn changed ${this.turn}`);
 		return this;
 	}
 
 	getCurrentTurn(): TurnType {
 		return this.turn;
-	}
-
-	printCurrentTurn() {
-		let turnString = "現在のターンは:TurnAです。";
-
-		if (this.turn === TurnType.TurnB) turnString = "現在のターンは:TurnBです。"
-
-		console.log(turnString);
 	}
 }
