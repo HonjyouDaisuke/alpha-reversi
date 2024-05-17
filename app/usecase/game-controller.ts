@@ -1,5 +1,5 @@
 "use client";
-import { BoardController } from "../entity/board/board-controller";
+import { BoardController } from "./board-controller";
 import { Point } from "../entity/cell/point-type";
 import { Evaluation } from "../entity/evaluation/evaluation";
 import { Player, PlayerData } from "../entity/player/player-type";
