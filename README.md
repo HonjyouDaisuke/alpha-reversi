@@ -2,6 +2,11 @@
 
 ### オセロゲーム(Alpha Reversi)
  オセロゲームをしながら、オセロに強くなろう！
+ タイトル画面↓
+![image](https://github.com/HonjyouDaisuke/alpha-reversi/assets/78740184/86ca9f72-64f2-4f17-8324-badea3f6efb4)
+
+ ゲーム中の画面↓
+ ![image](https://github.com/HonjyouDaisuke/alpha-reversi/assets/78740184/b30c855d-6ddc-4675-a841-ea963ed2bf50)
 
 ## 概要
 
@@ -32,6 +37,7 @@
 
 このプロジェクトはVercelにデプロイしていますので、以下をクリックして実行してみてください。
 
+https://alpha-reversi-git-main-honjyous-projects.vercel.app/
 
 ## Getting Started
 
