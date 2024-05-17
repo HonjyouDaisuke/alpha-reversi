@@ -1,6 +1,6 @@
 import { RuleControl } from "@/usecase/rule-control";
 import { CellType } from "@/entity/cell/cell-type";
-import { BoardClass } from "./board";
+import { BoardClass } from "../entity/board/board";
 import { Point } from "@/entity/cell/point-type";
 import { ComputerControl } from "@/usecase/computer-control";
 
