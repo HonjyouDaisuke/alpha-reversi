@@ -19,8 +19,12 @@ interface ISelector {
 function SelectorComp({ selector }: ISelector) {
   return (
     <div className="grid grid-cols-2">
-      {selector.map((item) => (
-        <SelectCharactor firstSecond={item.turnAorB} onChange={item.onChange} />
+      {selector.map((item, index) => (
+        <SelectCharactor
+          key={index}
+          firstSecond={item.turnAorB}
+          onChange={item.onChange}
+        />
       ))}
     </div>
   );
