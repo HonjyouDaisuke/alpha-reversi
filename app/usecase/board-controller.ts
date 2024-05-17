@@ -64,11 +64,15 @@ export class BoardController {
 		return false;
 	}
 
+	clearIfAbleCell(x: number, y: number) {
+		if (!this.isAbleCell(this.board.board[y][x])) return;
+		this.board.board[y][x] = CellType.Empty;
+	}
+
 	clearAbleCell() {
 		for (let y = 0; y < this.board.board.length; y++) {
 			for (let x = 0; x < this.board.board[0].length; x++) {
-				if (!this.isAbleCell(this.board.board[y][x])) continue;
-				this.board.board[y][x] = CellType.Empty;
+				this.clearIfAbleCell(x, y);
 			}
 		}
 	}
