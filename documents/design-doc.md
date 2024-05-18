@@ -63,6 +63,8 @@ Min-Max 法は、ゲーム理論において 2 人ゼロサムゲーム（例：
 - リーフノードのときの盤面の評価値を算出
 - BackTrack でルートノードへ戻る
 - 戻るときに自分の手のときはリーフノードの評価値が最大になるように、逆に相手の手のときは、リーフノードの評価値が最低になるように BackTracking する。
+![image](https://github.com/HonjyouDaisuke/alpha-reversi/assets/78740184/09983d26-13cf-46df-a38f-948f3ab673f9)
+
 
 5. 計算量
 
