@@ -1,4 +1,4 @@
-import Button from "./button/button";
+import Button from "./button";
 import Modal from "./modal/modal";
 
 interface Props {
@@ -28,16 +28,18 @@ export default function ConfirmModal({
   );
 
   const footer = (
-    <Button color="primary" className="block w-full" onClick={handleClose}>
-      OK
-    </Button>
+    <div className="flex w-full justify-center">
+      <Button mode={0} type="button" onClick={handleClose}>
+        OK
+      </Button>
+    </div>
   );
 
   return (
     <Modal
       open={isOpen}
       slots={{ header, footer }}
-      slotClasses={{ body: "text-left" }}
+      slotClasses={{ body: "text-left " }}
       onModalClose={handleClose}
     >
       {children}
