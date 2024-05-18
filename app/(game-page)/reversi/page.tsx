@@ -88,8 +88,8 @@ const setupGameControlInterval = (
   const intervalId = setInterval(() => {
     if (gameControl.gameInterval()) {
       clearInterval(intervalId);
-      setCompleteMessage(gameControl.getCompleteMessage());
-      setCompleteTitle(gameControl.getCompleteTitle());
+      setCompleteMessage(gameControl.getCompleteMessage().message);
+      setCompleteTitle(gameControl.getCompleteMessage().title);
       setIsModalOpen(true);
     }
     setMessage(gameControl.getMessageData());

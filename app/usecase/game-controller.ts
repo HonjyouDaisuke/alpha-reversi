@@ -14,6 +14,7 @@ import { Log } from "@/entity/log/log";
 import { LogType } from "@/entity/log/log-type";
 import { MessageType } from "@/entity/message/message-type";
 import { Message } from "@/entity/message/message";
+import Winner, { ModalType } from "@/entity/winner/winner";
 
 export class GameController {
   players = new Player();
@@ -72,30 +73,19 @@ export class GameController {
     return this.score;
   }
 
-  getCompleteTitle(): string {
-    const black = this.score.getBlackScore();
-    const white = this.score.getWhiteScore();
+  getCompleteMessage(): ModalType {
     const playerAId = this.turnControl.getPlayerAId();
     const playerAData = this.players.getPlayerData(playerAId);
     const playerBId = this.turnControl.getPlayerBId();
     const playerBData = this.players.getPlayerData(playerBId);
+    if (playerAData === null || playerBData === null)
+      return {
+        message: "勝者データが見つかりませんでした。",
+        title: "エラーが発生しました",
+      };
 
-    const winData = black > white ? playerAData : playerBData;
-
-    return `${winData?.displayName}の勝ち！！`;
-  }
-
-  getCompleteMessage(): string {
-    const black = this.score.getBlackScore();
-    const white = this.score.getWhiteScore();
-    const playerAId = this.turnControl.getPlayerAId();
-    const playerAData = this.players.getPlayerData(playerAId);
-    const playerBId = this.turnControl.getPlayerBId();
-    const playerBData = this.players.getPlayerData(playerBId);
-
-    const winData = black > white ? playerAData : playerBData;
-
-    return `${playerAData?.displayName} - [黒:${black} vs ${white}:白] - ${playerBData?.displayName}`;
+    const winner = new Winner(this.score, [playerAData, playerBData]);
+    return winner.makeModalMessage();
   }
 
   isCompleted(): boolean {
