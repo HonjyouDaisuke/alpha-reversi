@@ -31,6 +31,7 @@ function ReversiPageContent() {
   const [gameControl, setGameControl] = useAtom(gameControlAtom);
   const searchParams = useSearchParams();
   const [completeMessage, setCompleteMessage] = useState("");
+  const [completeTitle, setCompleteTitle] = useState("");
   const [message, setMessage] = useState<MessageType>({
     message: null,
     useSpinner: false,
@@ -41,6 +42,7 @@ function ReversiPageContent() {
       setupGameControlInterval(
         gameControl,
         setCompleteMessage,
+        setCompleteTitle,
         setIsModalOpen,
         setMessage,
         setStatus
@@ -67,6 +69,7 @@ function ReversiPageContent() {
       <ConfirmModalWrapper
         isModalOpen={isModalOpen}
         completeMessage={completeMessage}
+        title={completeTitle}
         handleModalOK={() => resetGameControl(setGameControl, router)}
         setIsModalOpen={setIsModalOpen}
       />
@@ -77,6 +80,7 @@ function ReversiPageContent() {
 const setupGameControlInterval = (
   gameControl: GameController,
   setCompleteMessage: React.Dispatch<React.SetStateAction<string>>,
+  setCompleteTitle: React.Dispatch<React.SetStateAction<string>>,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setMessage: React.Dispatch<React.SetStateAction<MessageType>>,
   setStatus: React.Dispatch<React.SetStateAction<boolean>>
@@ -84,7 +88,8 @@ const setupGameControlInterval = (
   const intervalId = setInterval(() => {
     if (gameControl.gameInterval()) {
       clearInterval(intervalId);
-      setCompleteMessage(gameControl.getCompleteMessage());
+      setCompleteMessage(gameControl.getCompleteMessage().message);
+      setCompleteTitle(gameControl.getCompleteMessage().title);
       setIsModalOpen(true);
     }
     setMessage(gameControl.getMessageData());
@@ -171,19 +176,21 @@ const RightSideBarWrapper = ({ logData }: RightSideBarWrapperProps) => (
 
 interface ConfirmModalWrapperProps {
   isModalOpen: boolean;
-  completeMessage: React.ReactNode;
+  title: string;
+  completeMessage: string;
   handleModalOK: () => void;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const ConfirmModalWrapper = ({
   isModalOpen,
+  title,
   completeMessage,
   handleModalOK,
   setIsModalOpen,
 }: ConfirmModalWrapperProps) => (
   <ConfirmModal
     isOpen={isModalOpen}
-    title={"ゲーム終了でーす"}
+    title={title}
     setIsOpen={setIsModalOpen}
     onCloseAction={handleModalOK}
   >
