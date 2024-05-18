@@ -72,6 +72,19 @@ export class GameController {
     return this.score;
   }
 
+  getCompleteTitle(): string {
+    const black = this.score.getBlackScore();
+    const white = this.score.getWhiteScore();
+    const playerAId = this.turnControl.getPlayerAId();
+    const playerAData = this.players.getPlayerData(playerAId);
+    const playerBId = this.turnControl.getPlayerBId();
+    const playerBData = this.players.getPlayerData(playerBId);
+
+    const winData = black > white ? playerAData : playerBData;
+
+    return `${winData?.displayName}の勝ち！！`;
+  }
+
   getCompleteMessage(): string {
     const black = this.score.getBlackScore();
     const white = this.score.getWhiteScore();
@@ -82,7 +95,7 @@ export class GameController {
 
     const winData = black > white ? playerAData : playerBData;
 
-    return `${winData?.displayName}の勝ち！！${playerAData?.displayName} - 黒:${black}個 vs 白:${white} - ${playerBData?.displayName}でした。`;
+    return `${playerAData?.displayName} - [黒:${black} vs ${white}:白] - ${playerBData?.displayName}`;
   }
 
   isCompleted(): boolean {
