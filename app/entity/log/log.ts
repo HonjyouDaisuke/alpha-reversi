@@ -16,10 +16,10 @@ export class Log {
 		return this.logDataList;
 	}
 
+	private static xItems = ["A", "B", "C", "D", "E", "F", "G", "H"];
+	private static yItems = ["1", "2", "3", "4", "5", "6", "7", "8"];
 	UnitConversion(p: Point): string {
-		const xItems = ["A", "B", "C", "D", "E", "F", "G", "H"];
-		const yItems = ["1", "2", "3", "4", "5", "6", "7", "8"];
-		return `[${xItems[p.x]},${yItems[p.y]}]`;
+		return `[${Log.xItems[p.x]},${Log.yItems[p.y]}]`;
 	}
 	makeMessageFromPut(p: Point, score: Score): string {
 		return `${this.UnitConversion(
