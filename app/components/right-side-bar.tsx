@@ -13,8 +13,8 @@ export function RightSideBar({ logData }: Props) {
 				<div className="text-lg font-bold p-3 text-black">★対戦履歴★</div>
 				<div className="flex flex-col gap-2 w-full h-full px-3 overflow-auto">
 
-					{reversedLogData.map((item, index) => (
-						<LogCard key={index} logData={item} />
+					{reversedLogData.map((item) => (
+						<LogCard key={item.id} logData={item} />
 					))}
 
 				</div>
