@@ -6,7 +6,6 @@ import { LogType } from "./log-type";
 export class Log {
 	logDataList: LogType[] = [];
 	lastLogId: number = 0;
-	constructor() { }
 	pushLogData(playerCell: CellType | null, message: string) {
 		const logData = { id: this.lastLogId, playerCell: playerCell, message: message };
 		this.lastLogId++;
