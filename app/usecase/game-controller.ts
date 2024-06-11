@@ -28,7 +28,6 @@ export class GameController {
 	log = new Log();
 	message = new Message();
 
-	constructor() { }
 
 	setPlayer(playerA: number, playerB: number) {
 		this.turnControl.setPlayer(playerA, playerB);
