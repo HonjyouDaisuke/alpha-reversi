@@ -42,9 +42,9 @@ export class GameController {
 		return this.log.fetchLogData();
 	}
 
-	getMessageData(): MessageType {
-		return this.message.getMessage();
-	}
+	// getMessageData(): MessageType {
+	// 	return this.message.getMessage();
+	// }
 
 	getUseHint(): boolean {
 		return this.useHint;
@@ -95,18 +95,16 @@ export class GameController {
 			this.rule.findValidPlace(currentBoard, CellType.White).length === 0
 		);
 	}
-	printGameStatus() {
-		let statusString = ["Not Started", "Prepare", "Turning", "Waiting", "completed"];
 
-		console.log(`turn = ${this.turnControl.getCurrentTurnCell} status = ${statusString[this.status]}`);
-	}
-	gameInterval(): boolean {
-		this.printGameStatus();
-		if (this.status === StatusType.Completed) return true;
+	gameInterval(setMessage: React.Dispatch<React.SetStateAction<MessageType>>): boolean {
+		if (this.status === StatusType.Completed) {
+			return true;
+		}
 		if (this.isCompleted()) {
 			this.status = StatusType.Completed;
 			const message = this.log.makeMessageEnded(this.score);
 			this.log.pushLogData(null, message);
+			setMessage({ message: "試合終了", useSpinner: false });
 			return true;
 		}
 
@@ -119,31 +117,38 @@ export class GameController {
 			this.turnControl.getCurrentPlayerId()
 		);
 
-		this.handleGameStatus(paths, playerData);
+		this.handleGameStatus(paths, playerData, setMessage);
 		return false;
 	}
 
 	private handleGameStatus(
 		paths: Point[],
-		playerData: PlayerData | null | undefined
+		playerData: PlayerData | null | undefined,
+		setMessage: React.Dispatch<React.SetStateAction<MessageType>>
 	): void {
+		setMessage({ message: "よしいくぞ！", useSpinner: true });
 		if (this.status === StatusType.Prepare) {
-			this.handlePrepareStatus(paths, playerData);
+			this.handlePrepareStatus(paths, playerData, setMessage);
 		} else if (this.status === StatusType.Waiting) {
-			this.handleWaitingStatus(paths, playerData);
+			setMessage({ message: "かかってきやがれ", useSpinner: true });
+
+			this.handleWaitingStatus(paths, playerData, setMessage);
 		}
 	}
 
 	private handlePrepareStatus(
 		paths: Point[],
-		playerData: PlayerData | null | undefined
+		playerData: PlayerData | null | undefined,
+		setMessage: React.Dispatch<React.SetStateAction<MessageType>>
 	): void {
 		this.boardController.clearAbleCell();
 		this.status = StatusType.Waiting;
+		const displayName = this.players.getPlayerData(this.turnControl.getCurrentPlayerId())?.displayName;
+		setMessage({ message: `${displayName} 思考中・・・`, useSpinner: true });
 
 		if (playerData?.isCom || !this.useHint) return;
 
-		this.message.setMessage("ヒント準備中。。。", true);
+		setMessage({ message: "ヒント準備中。。。", useSpinner: true });
 		const newBoard = this.boardController.setAbleCell(
 			paths,
 			this.turnControl.getCurrentTurnCell()
@@ -153,14 +158,17 @@ export class GameController {
 
 	private handleWaitingStatus(
 		paths: Point[],
-		playerData: PlayerData | null | undefined
+		playerData: PlayerData | null | undefined,
+		setMessage: React.Dispatch<React.SetStateAction<MessageType>>
 	): void {
+
 		if (paths.length === 0) {
 			this.handleInvalidTurn();
 		} else if (!playerData?.isCom) {
-			this.message.setMessage("あなたの番です", false);
+			setMessage({ message: "あなたの番です", useSpinner: false });
 		} else {
-			this.handleComputerTurn(playerData);
+			setMessage({ message: "コンピュータの番です", useSpinner: true });
+			this.handleComputerTurn(playerData, setMessage);
 		}
 	}
 
@@ -172,11 +180,8 @@ export class GameController {
 		this.status = StatusType.Prepare;
 	}
 
-	private handleComputerTurn(playerData: PlayerData): void {
-		this.message.setMessage(
-			`${playerData.displayName}の番です。(思考中・・・)`,
-			true
-		);
+	private handleComputerTurn(playerData: PlayerData, setMessage: React.Dispatch<React.SetStateAction<MessageType>>): void {
+		setMessage({ message: `${playerData.displayName}の番です。(思考中・・・)`, useSpinner: true });
 		const computer = new ComputerControl(
 			this.boardController.getCurrentBoard(),
 			playerData.computer?.depth ?? 0
@@ -184,16 +189,16 @@ export class GameController {
 		const post = computer.getComputerPost(
 			this.turnControl.getCurrentTurnCell()
 		);
-		if (post) this.putPiece(post);
+		if (post) this.putPiece(post, setMessage);
 	}
 
-	putPiece(p: Point): boolean {
+	putPiece(p: Point, setMessage: React.Dispatch<React.SetStateAction<MessageType>>): boolean {
 		const newBoard = this.boardController.setNewPiece(
 			p,
 			this.turnControl.getCurrentTurnCell()
 		);
 		if (!newBoard) {
-			this.message.setMessage("そこには置けませんでした。", false);
+			setMessage({ message: "そこには置けませんでした。", useSpinner: false });
 			return false;
 		}
 		this.boardController.setNewBoard(newBoard.board);
@@ -205,11 +210,11 @@ export class GameController {
 		return true;
 	}
 
-	putHumanPiece(p: Point) {
+	putHumanPiece(p: Point, setMessage: React.Dispatch<React.SetStateAction<MessageType>>) {
 		const playerData = this.players.getPlayerData(
 			this.turnControl.getCurrentPlayerId()
 		);
 		if (playerData?.isCom) return;
-		if (this.putPiece(p)) this.boardController.clearAbleCell();
+		if (this.putPiece(p, setMessage)) this.boardController.clearAbleCell();
 	}
 }

@@ -6,6 +6,7 @@ import { Evaluation } from "../entity/evaluation/evaluation";
 import { TurnType } from "../entity/turn/turn-type";
 import { RuleControl } from "./rule-control";
 import { TurnController } from "./turn-controller";
+import Cell from "@/components/cell";
 
 type PosEvaluation = {
 	evaluation: number;
@@ -37,13 +38,10 @@ export class ComputerControl {
 			cell,
 			cell
 		);
+
 		if (pointEvaluation?.point === undefined) {
-			console.log("置ける場所ありませんやん");
 			return null;
 		}
-		console.log(
-			`最終的に(${pointEvaluation.point?.x},${pointEvaluation.point?.y}に置きました。評価値は${pointEvaluation.evaluation}です。`
-		);
 		return pointEvaluation?.point;
 	}
 
@@ -78,12 +76,7 @@ export class ComputerControl {
 		}
 		for (let i = 0; i < paths.length; i++) {
 			const map = JSON.parse(JSON.stringify(board));
-			console.log(
-				`com:depth=${depth} playerCell=${playerCell} Point=${paths[i].x},${paths[i].y}に置きます`
-			);
 			const puttedMap = rouleControll.flipPiece([...map], paths[i], playerCell);
-			console.log(`置いた結果`);
-			console.log(puttedMap);
 			positionEvaluations.push(
 				this.getMinMax(
 					[...puttedMap],
@@ -106,7 +99,6 @@ export class ComputerControl {
 		);
 		if (selectedPosition === null || selectedPosition === undefined)
 			return null;
-		console.log(`評価値=${selectedPosition.evaluation}`);
 		return selectedPosition;
 	}
 }

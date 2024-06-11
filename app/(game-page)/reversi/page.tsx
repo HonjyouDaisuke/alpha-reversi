@@ -14,6 +14,7 @@ import MessageBoard from "@/components/message-board";
 import Button from "@/components/button";
 import { MessageType } from "@/entity/message/message-type";
 import { LogType } from "@/entity/log/log-type";
+import { setMaxIdleHTTPParsers } from "http";
 
 export const gameControlAtom = atom<GameController>(new GameController());
 export default function ReversiPage() {
@@ -62,7 +63,7 @@ function ReversiPageContent() {
 				gameControl={gameControl}
 				message={message}
 				handleCellClick={(x: number, y: number) =>
-					updateGameControlWithMove(gameControl, x, y, setStatus)
+					updateGameControlWithMove(gameControl, x, y, setStatus, setMessage)
 				}
 				handleGiveUp={() => resetGameControl(setGameControl, router)}
 				buttonText={closeText}
@@ -89,13 +90,12 @@ const setupGameControlInterval = (
 	setStatus: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
 	const intervalId = setInterval(() => {
-		if (gameControl.gameInterval()) {
+		if (gameControl.gameInterval(setMessage)) {
 			clearInterval(intervalId);
 			setCompleteMessage(gameControl.getCompleteMessage().message);
 			setCompleteTitle(gameControl.getCompleteMessage().title);
 			setIsModalOpen(true);
 		}
-		setMessage(gameControl.getMessageData());
 		setStatus((prev) => !prev);
 	}, 100);
 	return () => clearInterval(intervalId);
@@ -116,9 +116,10 @@ const updateGameControlWithMove = (
 	gameControl: GameController,
 	x: number,
 	y: number,
-	setStatus: React.Dispatch<React.SetStateAction<boolean>>
+	setStatus: React.Dispatch<React.SetStateAction<boolean>>,
+	setMessage: React.Dispatch<React.SetStateAction<MessageType>>
 ) => {
-	gameControl.putHumanPiece({ x, y });
+	gameControl.putHumanPiece({ x, y }, setMessage);
 	setStatus((prev) => !prev);
 };
 
