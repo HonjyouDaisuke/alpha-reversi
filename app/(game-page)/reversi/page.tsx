@@ -3,7 +3,7 @@ import Board from "@/components/board";
 import { Suspense, useEffect, useState } from "react";
 import ConfirmModal from "@/components/confirm-modal";
 import { GameController } from "@/usecase/game-controller";
-import { PrimitiveAtom, atom } from "jotai";
+import { atom } from "jotai";
 import { useAtom } from "jotai/react";
 import { RightSideBar } from "@/components/right-side-bar";
 import { LeftSideBar } from "@/components/left-side-bar";
@@ -14,7 +14,6 @@ import MessageBoard from "@/components/message-board";
 import Button from "@/components/button";
 import { MessageType } from "@/entity/message/message-type";
 import { LogType } from "@/entity/log/log-type";
-import { setMaxIdleHTTPParsers } from "http";
 
 export const gameControlAtom = atom<GameController>(new GameController());
 export default function ReversiPage() {
