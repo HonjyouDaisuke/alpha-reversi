@@ -3,7 +3,7 @@ import Board from "@/components/board";
 import { Suspense, useEffect, useState } from "react";
 import ConfirmModal from "@/components/confirm-modal";
 import { GameController } from "@/usecase/game-controller";
-import { PrimitiveAtom, atom } from "jotai";
+import { atom } from "jotai";
 import { useAtom } from "jotai/react";
 import { RightSideBar } from "@/components/right-side-bar";
 import { LeftSideBar } from "@/components/left-side-bar";
@@ -62,7 +62,7 @@ function ReversiPageContent() {
 				gameControl={gameControl}
 				message={message}
 				handleCellClick={(x: number, y: number) =>
-					updateGameControlWithMove(gameControl, x, y, setStatus)
+					updateGameControlWithMove(gameControl, x, y, setStatus, setMessage)
 				}
 				handleGiveUp={() => resetGameControl(setGameControl, router)}
 				buttonText={closeText}
@@ -89,13 +89,12 @@ const setupGameControlInterval = (
 	setStatus: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
 	const intervalId = setInterval(() => {
-		if (gameControl.gameInterval()) {
+		if (gameControl.gameInterval(setMessage)) {
 			clearInterval(intervalId);
 			setCompleteMessage(gameControl.getCompleteMessage().message);
 			setCompleteTitle(gameControl.getCompleteMessage().title);
 			setIsModalOpen(true);
 		}
-		setMessage(gameControl.getMessageData());
 		setStatus((prev) => !prev);
 	}, 100);
 	return () => clearInterval(intervalId);
@@ -116,9 +115,10 @@ const updateGameControlWithMove = (
 	gameControl: GameController,
 	x: number,
 	y: number,
-	setStatus: React.Dispatch<React.SetStateAction<boolean>>
+	setStatus: React.Dispatch<React.SetStateAction<boolean>>,
+	setMessage: React.Dispatch<React.SetStateAction<MessageType>>
 ) => {
-	gameControl.putHumanPiece({ x, y });
+	gameControl.putHumanPiece({ x, y }, setMessage);
 	setStatus((prev) => !prev);
 };
 
